@@ -26,9 +26,9 @@ export default ({ data }) => (
         motionDamping={15}
         legends={[
             {
-                anchor: 'right',
+                anchor: 'bottom-left',
                 direction: 'column',
-                translateY: -20,
+                translateY: 10,
                 itemWidth: 100,
                 itemHeight: 18,
                 itemTextColor: '#999',
