@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RentApi.Api.DTO;
+using RentApi.Api.Extensions;
 using RentApi.Infrastructure.Database;
 using RentApi.Infrastructure.Database.Models;
+using SmartAnalytics.BASF.Backend.Infrastructure;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 
 namespace RentApi.Api
@@ -12,36 +16,56 @@ namespace RentApi.Api
     [ApiController]
     public class EquipmentTypesController : ControllerBase
     {
-        private readonly RentApiDbContext _context;
+        private readonly AppDbContext _context;
 
-        public EquipmentTypesController(RentApiDbContext context)
+        public EquipmentTypesController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/EquipmentTypes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EquipmentType>>> GetEquipmentType()
+        public async Task<ActionResult<EquipmentTypeDTO[]>> GetList(
+            int _start = 0, int _end = 10,
+            string _sort = "id", string _order = "ASC",
+            string q = "")
         {
-            Response.Headers.Add("X-Total-Count", _context.EquipmentType.Count().ToString());
-            return await _context.EquipmentType.ToListAsync();
-        }
+            var query = _context.EquipmentType.AsQueryable().Where(x => !x.Archived);
 
-        [HttpGet("many")]
-        public async Task<ActionResult<IEnumerable<EquipmentType>>> GetMany([FromQuery] int[] id)
-        {
-            var result = await _context.EquipmentType
-                .Where(x => id.Contains(x.Id))
+            if (!string.IsNullOrWhiteSpace(q))
+            {
+                query = query.Where(x => EF.Functions.ILike(x.Name, $"%{q}%"));
+            }
+
+            var count = await query.CountAsync();
+            HttpContext.SetTotalCount(count);
+
+            var result = await query
+                .OrderBy($"{_sort} {_order}")
+                .Skip(_start)
+                .Take(_end - _start)
+                .ToDTO()
                 .ToArrayAsync();
 
             return result;
         }
 
-        // GET: api/EquipmentTypes/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<EquipmentType>> GetEquipmentType(int id)
+        [HttpGet("many")]
+        public async Task<ActionResult<IEnumerable<EquipmentTypeDTO>>> GetMany([FromQuery] int[] id)
         {
-            var equipmentType = await _context.EquipmentType.FindAsync(id);
+            var result = await _context.EquipmentType
+                .Where(x => id.Contains(x.Id))
+                .ToDTO()
+                .ToArrayAsync();
+
+            return result;
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<EquipmentTypeDTO>> GetEquipmentType(int id)
+        {
+            var equipmentType = await _context.EquipmentType.Where(x => x.Id == id)
+                .ToDTO()
+                .FirstOrDefaultAsync();
 
             if (equipmentType == null)
             {
@@ -51,51 +75,42 @@ namespace RentApi.Api
             return equipmentType;
         }
 
-        // PUT: api/EquipmentTypes/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEquipmentType(int id, EquipmentType equipmentType)
+        public async Task<ActionResult<EquipmentTypeDTO>> PutEquipmentType(int id, EquipmentTypeDTO dto)
         {
-            if (id != equipmentType.Id)
+            var entity = await _context.EquipmentType.FirstOrDefaultAsync(x => x.Id == id);
+            if (entity == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(equipmentType).State = EntityState.Modified;
+            entity.Name = dto.Name;
+            entity.PricePerDay = dto.PricePerDay;
+            entity.PricePerHour = dto.PricePerHour;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EquipmentTypeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
-            return NoContent();
+            return dto;
         }
 
-        // POST: api/EquipmentTypes
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<EquipmentType>> PostEquipmentType(EquipmentType equipmentType)
+        public async Task<ActionResult<EquipmentTypeDTO>> PostEquipmentType(EquipmentTypeDTO dto)
         {
+            var equipmentType = new EquipmentType
+            {
+                Name = dto.Name,
+                PricePerDay = dto.PricePerDay,
+                PricePerHour = dto.PricePerHour
+            };
+
             _context.EquipmentType.Add(equipmentType);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetEquipmentType", new { id = equipmentType.Id }, equipmentType);
+            dto.Id = equipmentType.Id;
+
+            return CreatedAtAction("GetEquipmentType", new { id = equipmentType.Id }, dto);
         }
 
-        // DELETE: api/EquipmentTypes/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<EquipmentType>> DeleteEquipmentType(int id)
         {
@@ -105,15 +120,10 @@ namespace RentApi.Api
                 return NotFound();
             }
 
-            _context.EquipmentType.Remove(equipmentType);
+            equipmentType.Archived = true;
             await _context.SaveChangesAsync();
 
             return equipmentType;
-        }
-
-        private bool EquipmentTypeExists(int id)
-        {
-            return _context.EquipmentType.Any(e => e.Id == id);
         }
     }
 }
