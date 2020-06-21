@@ -1,18 +1,32 @@
 import React from 'react';
 import { Admin, Resource } from 'react-admin';
+import { Route } from 'react-router-dom';
+import authProvider from './authProvider/authProvider';
 import dataProvider from './dataProvider/dataProvider';
 import i18n from './i18n/ru';
-import MyLayout from './apps/guest/layout/MyLayout';
-import equipment from './apps/guest/resources/equipment';
+import MyLayout from './layout/MyLayout';
+import employees from './resources/employees';
+import equipment from './resources/equipment';
 import equipmentTypes from './resources/equipmentTypes';
+import rents from './resources/rents';
 import shops from './resources/shops';
+import shopReducer from './shopSelector/shopReducer';
+import Info from './apps/emp/customRoutes/Info';
 
+var customRoutes = [
+    <Route exact path="/info" component={Info} />,
+]
 
 const App = () => (
-    <Admin dataProvider={dataProvider} i18nProvider={i18n} layout={MyLayout} >
-        <Resource name="guest/equipment" {...equipment} />
-        <Resource name="equipmentTypes" /* list={equipmentTypes.list} /> */ />
+    <Admin customReducers={{ shop: shopReducer }} customRoutes={customRoutes} layout={MyLayout} 
+        dataProvider={dataProvider} authProvider={authProvider} i18nProvider={i18n}>
+
+        <Resource name="rents" {...rents} />
+        <Resource name="equipment" {...equipment}/>
+        <Resource name="equipmentTypes" list={equipmentTypes.list} />
+        <Resource name="employees" {...employees} />
         <Resource name="shops" list={shops.list} />
+
     </Admin>
 );
 

@@ -1,10 +1,10 @@
 import React from 'react';
+import { Fragment, useCallback, FC } from 'react';
 import { AppBar } from 'react-admin';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { SelectInput } from 'react-admin';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-
+import IconButton from '@material-ui/core/IconButton';
 
 const useStyles = makeStyles({
     title: {
@@ -30,13 +30,9 @@ const MyAppBar = props => {
             />
             <span className={classes.spacer} />
             
-            <button class="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorInherit"
-                            type="button" aria-label="Справка"> 
-                <span class="MuiIconButton-label">           
-                    <InfoOutlinedIcon />
-                </span>  
-                <span class="MuiTouchRipple-root"></span>
-            </button>
+            <IconButton  href="/#/info" color="inherit">
+                <InfoOutlinedIcon/>
+            </IconButton>
         </AppBar>
     );
 };

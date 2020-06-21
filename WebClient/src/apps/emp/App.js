@@ -1,7 +1,7 @@
 import React from 'react';
 import { Admin, Resource } from 'react-admin';
+import { Route } from 'react-router-dom';
 import authProvider from './authProvider/authProvider';
-import customRoutes from './customRoutes/customRoutes';
 import dataProvider from './dataProvider/dataProvider';
 import i18n from './i18n/ru';
 import MyLayout from './layout/MyLayout';
@@ -11,6 +11,11 @@ import equipmentTypes from './resources/equipmentTypes';
 import rents from './resources/rents';
 import shops from './resources/shops';
 import shopReducer from './shopSelector/shopReducer';
+import Info from './apps/emp/customRoutes/Info';
+
+var customRoutes = [
+    <Route exact path="/info" component={Info} />,
+]
 
 const App = () => (
     <Admin customReducers={{ shop: shopReducer }} customRoutes={customRoutes} layout={MyLayout} 

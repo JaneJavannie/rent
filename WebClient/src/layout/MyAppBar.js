@@ -5,6 +5,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { SelectInput } from 'react-admin';
 import ShopSelector from '../shopSelector/ShopSelector';
 import EmployeeInfo from './EmployeeInfo';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import IconButton from '@material-ui/core/IconButton';
 
 const useStyles = makeStyles({
     title: {
@@ -31,6 +33,10 @@ const MyAppBar = props => {
             <EmployeeInfo/>
             <ShopSelector/>
             <span className={classes.spacer} />
+            
+            <IconButton  href="/#/info" color="inherit">
+                <InfoOutlinedIcon/>
+            </IconButton>
         </AppBar>
     );
 };

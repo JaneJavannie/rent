@@ -49,7 +49,7 @@ export default () => {
                 </div>
                 <div style={styles.singleCol}>
                     <Card>
-                        <CardHeader title={'Аренды по магазину'} />
+                        <CardHeader title={'Аренды по точке'} />
                         <CardContent style={styles.line}>
                             <Line data={dashboards.rentsPerShop}></Line>
                         </CardContent>
