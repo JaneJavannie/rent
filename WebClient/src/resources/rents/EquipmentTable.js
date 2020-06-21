@@ -43,11 +43,6 @@ var moment = require('moment');
 
 const EquipmentTable = (props) => {
     let record = props.record
-    let equipmentIds = record.equipmentIds;
-    if (!equipmentIds) {
-        equipmentIds = [];
-    }
-
     // const translate = useTranslate();
 
     // const eqRequest = useGetMany('equipment', equipmentIds);
@@ -82,6 +77,12 @@ const EquipmentTable = (props) => {
     const [state, setState] = useState({});
     const version = useVersion();
     const fetchData = useCallback(async () => {
+        let equipmentIds = record.equipmentIds;
+        if (!equipmentIds) {
+            equipmentIds = [];
+        }
+    
+        debugger
         const { data: equipment } = await dataProvider.getMany('equipment', {
             ids: equipmentIds,
         });
@@ -97,8 +98,32 @@ const EquipmentTable = (props) => {
         }, {});
 
         let total = 0;
+
+
+        const price = (type, from, to) => {
+            var price = 0;
+            if (type && from && to) {
+                debugger
+                from = moment(from);
+                to = moment(to)
+                if (to > from) {
+                    let hours = Math.round(to.diff(from, 'hours', true))
+                    if (hours < 6) {
+                        price = hours * type.pricePerHour;
+                    } else {
+                        let days = to.diff(from, 'days');
+                        if (days == 0) {
+                            days = 1;
+                        }
+                        price = days * type.pricePerDay;
+                    }
+                }
+            }
+            return price;
+        };
+
         const eqPrice = equipment.reduce(function (acc, cur, i) {
-            acc[cur.id] = price(types[cur.id], record.from, record.to);
+            acc[cur.id] = price(types[cur.equipmentTypeId], record.from, record.to);
             total += acc[cur.id];
             return acc;
         }, {});
@@ -111,8 +136,7 @@ const EquipmentTable = (props) => {
             total,
             types
         }));
-        console.log(state)
-    }, [dataProvider]);
+    }, [dataProvider, record]);
 
     useEffect(() => {
         fetchData();
@@ -179,26 +203,5 @@ const EquipmentTable = (props) => {
     );
 };
 
-const price = (type, from, to) => {
-    var price = 0;
-    if (type && from && to) {
-        debugger
-        from = moment(from);
-        to = moment(to)
-        if (to > from) {
-            let hours = Math.round(to.diff(from, 'hours', true))
-            if (hours < 6) {
-                price = hours * type.pricePerHour;
-            } else {
-                let days = to.diff(from, 'days');
-                if (days == 0) {
-                    days = 1;
-                }
-                price = days * type.pricePerDay;
-            }
-        }
-    }
-    return price;
-};
 
 export default EquipmentTable;
