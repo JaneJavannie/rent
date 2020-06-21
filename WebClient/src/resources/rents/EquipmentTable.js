@@ -1,5 +1,11 @@
-import React from 'react';
-import { SearchInput, translate, RichTextField, SaveButton, Loading, Toolbar,useUpdate, NumberInput, NumberField, ShowController, BooleanInput, useTranslate, ShowView, usePermissions, Create, ReferenceField, ReferenceArrayField, SingleFieldList, ChipField, useGetMany, ArrayInput, CheckboxGroupInput, ReferenceInput, AutocompleteInput, SelectInput, FormDataConsumer, AutocompleteArrayInput, ReferenceArrayInput, SelectArrayInput, SimpleFormIterator, required, List, Show, Edit, SimpleForm, TextInput, DateTimeInput, ReferenceManyField, EditButton, SimpleShowLayout, Datagrid, TextField, DateField } from 'react-admin';
+import React, {
+    useState,
+    useEffect,
+    useCallback,
+    FC,
+    CSSProperties,
+} from 'react';
+import { SearchInput, translate, useVersion, useDataProvider, RichTextField, SaveButton, Loading, Toolbar,useUpdate, NumberInput, NumberField, ShowController, BooleanInput, useTranslate, ShowView, usePermissions, Create, ReferenceField, ReferenceArrayField, SingleFieldList, ChipField, useGetMany, ArrayInput, CheckboxGroupInput, ReferenceInput, AutocompleteInput, SelectInput, FormDataConsumer, AutocompleteArrayInput, ReferenceArrayInput, SelectArrayInput, SimpleFormIterator, required, List, Show, Edit, SimpleForm, TextInput, DateTimeInput, ReferenceManyField, EditButton, SimpleShowLayout, Datagrid, TextField, DateField } from 'react-admin';
 import { Form, Field } from 'react-final-form'
 import arrayMutators from 'final-form-arrays'
 import { FieldArray } from 'react-final-form-arrays'
@@ -22,7 +28,6 @@ import compose from 'recompose/compose';
 import { Link } from 'react-router-dom';
 import { stringify } from 'query-string';
 
-import { cloneElement, useMemo, useCallback  } from 'react';
 import { useForm } from 'react-final-form';
 import PropTypes from 'prop-types';
 import {
@@ -43,45 +48,98 @@ const EquipmentTable = (props) => {
         equipmentIds = [];
     }
 
-    const translate = useTranslate();
+    // const translate = useTranslate();
 
-    let eqRequest = useGetMany('equipment', equipmentIds);
+    // const eqRequest = useGetMany('equipment', equipmentIds);
 
-    let typesIds = [];
-    if (eqRequest.loaded) {
-        typesIds = eqRequest.data.map((e) => e.equipmentTypeId);
-    }
+    // let typesIds = [];
+    // if (eqRequest.loaded) {
+    //     typesIds = eqRequest.data.map((e) => e.equipmentTypeId);
+    // }
 
-    let typesRequest = useGetMany('equipmentTypes', typesIds);
+    // const typesRequest = useGetMany('equipmentTypes', typesIds);
 
-    let allLoaded = (arr) => {
-        if (!arr) {
-            return false;
-        }
-        for (let i = 0; i < arr.length; i++) {
-            if (!arr[i]) {
-                return false;
-            }
-        }
-        return true;
-    }
+    // let allLoaded = (arr) => {
+    //     if (!arr) {
+    //         return false;
+    //     }
+    //     for (let i = 0; i < arr.length; i++) {
+    //         if (!arr[i]) {
+    //             return false;
+    //         }
+    //     }
+    //     return true;
+    // }
 
-    const loaded = equipmentIds.length == 0 || eqRequest.loaded && typesRequest.loaded && allLoaded(eqRequest.data) && allLoaded(typesRequest.data);
-    if (!loaded) {
+    // const loaded = equipmentIds.length == 0 || eqRequest.loaded && typesRequest.loaded && allLoaded(eqRequest.data) && allLoaded(typesRequest.data);
+    // if (!loaded) {
+    //     return <Loading />;
+    // }
+
+    const dataProvider = useDataProvider();
+
+    
+    const [state, setState] = useState({});
+    const version = useVersion();
+    const fetchData = useCallback(async () => {
+        const { data: equipment } = await dataProvider.getMany('equipment', {
+            ids: equipmentIds,
+        });
+
+        const typesIds = equipment.map((e) => e.equipmentTypeId);
+        const { data: equipmentTypes } = await dataProvider.getMany('equipmentTypes', {
+            ids: typesIds,
+        });
+        
+        let types = equipmentTypes.reduce(function (acc, cur, i) {
+            acc[cur.id] = cur;
+            return acc;
+        }, {});
+
+        let total = 0;
+        const eqPrice = equipment.reduce(function (acc, cur, i) {
+            acc[cur.id] = price(types[cur.id], record.from, record.to);
+            total += acc[cur.id];
+            return acc;
+        }, {});
+
+        setState(state => ({
+            ...state,
+            equipmentTypes,
+            equipment,
+            eqPrice,
+            total,
+            types
+        }));
+        console.log(state)
+    }, [dataProvider]);
+
+    useEffect(() => {
+        fetchData();
+    }, [version]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // let types = typesRequest.data.reduce(function (acc, cur, i) {
+    //     acc[cur.id] = cur;
+    //     return acc;
+    // }, {});
+
+    // let total = 0;
+    // const eqPrice = eqRequest.data.reduce(function (acc, cur, i) {
+    //     acc[cur.id] = price(types[cur.id], record.from, record.to);
+    //     total += acc[cur.id];
+    //     return acc;
+    // }, {});
+
+    const {
+        equipment,
+        types,
+        eqPrice,
+        total
+    } = state;
+
+    if (!equipment || !types) {
         return <Loading />;
     }
-
-    let types = typesRequest.data.reduce(function (acc, cur, i) {
-        acc[cur.id] = cur;
-        return acc;
-    }, {});
-
-    let total = 0;
-    const eqPrice = eqRequest.data.reduce(function (acc, cur, i) {
-        acc[cur.id] = price(types[cur.id], record.from, record.to);
-        total += acc[cur.id];
-        return acc;
-    }, {});
 
     return (
         <TableContainer component={Paper}>
@@ -97,14 +155,14 @@ const EquipmentTable = (props) => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {eqRequest.data.map((row) => (
+                    {equipment.map((row) => (
                         <TableRow key={row.id}>
-                            <TableCell component="th" scope="row">{row.id}</TableCell>
-                            <TableCell>{types[row.equipmentTypeId] ? types[row.equipmentTypeId].name : ""}</TableCell>
-                            <TableCell>{row.name}</TableCell>
-                            <TableCell>{types[row.equipmentTypeId] ? types[row.equipmentTypeId].pricePerHour : ""}</TableCell>
-                            <TableCell>{types[row.equipmentTypeId] ? types[row.equipmentTypeId].pricePerDay : ""}</TableCell>
-                            <TableCell>{eqPrice[row.id]}</TableCell>
+                            <TableCell component="th" scope="row"><div>{row.id}</div></TableCell>
+                            <TableCell><div>{types[row.equipmentTypeId] ? types[row.equipmentTypeId].name : ""}</div></TableCell>
+                            <TableCell><div>{row.name}</div></TableCell>
+                            <TableCell><div>{types[row.equipmentTypeId] ? types[row.equipmentTypeId].pricePerHour : ""}</div></TableCell>
+                            <TableCell><div>{types[row.equipmentTypeId] ? types[row.equipmentTypeId].pricePerDay : ""}</div></TableCell>
+                            <TableCell><div>{eqPrice[row.id]}</div></TableCell>
                         </TableRow>
                     ))}
                     <TableRow>
@@ -113,7 +171,7 @@ const EquipmentTable = (props) => {
                         <TableCell />
                         <TableCell />
                         <TableCell />
-                        <TableCell><b>{total}</b></TableCell>
+                        <TableCell><div><b>{total}</b></div></TableCell>
                     </TableRow>
                 </TableBody>
             </Table>
@@ -124,6 +182,7 @@ const EquipmentTable = (props) => {
 const price = (type, from, to) => {
     var price = 0;
     if (type && from && to) {
+        debugger
         from = moment(from);
         to = moment(to)
         if (to > from) {
