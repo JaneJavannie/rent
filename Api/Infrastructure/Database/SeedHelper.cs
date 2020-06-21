@@ -49,8 +49,8 @@ namespace RentApi.Infrastructure.Database
                     FirstName = "Иван",
                     MiddleName = "Иванович",
                     LastName = "Иванов",
-                    UserName = "vova228@mail.ru",
-                    Email = "vova228@mail.ru",
+                    UserName = "admin@mail.ru",
+                    Email = "admin@mail.ru",
                     EmailConfirmed = true
                 },
                 new User
@@ -58,14 +58,44 @@ namespace RentApi.Infrastructure.Database
                     FirstName = "Дмитрий",
                     MiddleName = "Дмитриевич",
                     LastName = "Дмитриев",
-                    UserName = "dima420@mail.ru",
-                    Email = "dima420@mail.ru",
+                    UserName = "employee@mail.ru",
+                    Email = "employee@mail.ru",
+                    EmailConfirmed = true
+                },
+                new User
+                {
+                    FirstName = "Олег",
+                    MiddleName = "Олегович",
+                    LastName = "Олегов",
+                    UserName = "employee2@mail.ru",
+                    Email = "employee2@mail.ru",
+                    EmailConfirmed = true
+                },
+              new User
+                {
+                    FirstName = "Ярослав",
+                    MiddleName = "Ярославович",
+                    LastName = "Ярославов",
+                    UserName = "employee3@mail.ru",
+                    Email = "employee3@mail.ru",
+                    EmailConfirmed = true
+                },
+               new User
+                {
+                    FirstName = "Петр",
+                    MiddleName = "Петрович",
+                    LastName = "Петров",
+                    UserName = "employee4@mail.ru",
+                    Email = "employee4@mail.ru",
                     EmailConfirmed = true
                 }
             };
 
-            await userManager.CreateAsync(users[0], "asdASD123!");
-            await userManager.CreateAsync(users[1], "ZXCasd123!");
+            await userManager.CreateAsync(users[0], "admin");
+            await userManager.CreateAsync(users[1], "employee"); //pasw
+            await userManager.CreateAsync(users[2], "employee");
+            await userManager.CreateAsync(users[3], "employee");
+            await userManager.CreateAsync(users[4], "employee");
 
             // Shops
 
@@ -102,6 +132,24 @@ namespace RentApi.Infrastructure.Database
                     Shop = shops[1],
                     User = users[1],
                     Phone = "+79127892000"
+                },
+               new Employee
+                {
+                    Shop = shops[0],
+                    User = users[2],
+                    Phone = "+79127892340"
+                },
+              new Employee
+                {
+                    Shop = shops[1],
+                    User = users[3],
+                    Phone = "+791278934589"
+                },
+              new Employee
+                {
+                    Shop = shops[1],
+                    User = users[4],
+                    Phone = "+79127892543"
                 },
             };
 
@@ -186,7 +234,7 @@ namespace RentApi.Infrastructure.Database
                 {
                     Shop = shops[0],
                     Name = "Палатка 2-местная Outventure DOME 2",
-                    EquipmentType = equipmentTypes[3]
+                    EquipmentType = equipmentTypes[4]
                 },
 
                new Equipment
@@ -211,7 +259,13 @@ namespace RentApi.Infrastructure.Database
                 {
                     Shop = shops[1],
                     Name = "Велосипед городской Stern Q-stom neon 28",
-                    EquipmentType = equipmentTypes[7]
+                    EquipmentType = equipmentTypes[6]
+                },
+               new Equipment
+                {
+                    Shop = shops[0],
+                    Name = "Велосипед городской Silverback Superspeed 1 (2019) 28",
+                    EquipmentType = equipmentTypes[6]
                 },
                new Equipment
                 {
@@ -237,7 +291,7 @@ namespace RentApi.Infrastructure.Database
             //    },
             //    new Customer
             //    {
-            //        Name = "pizdanahui"
+            //        Name = ""
             //    }
             //};
 
@@ -249,38 +303,105 @@ namespace RentApi.Infrastructure.Database
             {
                 new Rent
                 {
-                    Shop = shops[0],
+                    Shop = shops[1],
                     Employee = employees[0],
                     Customer = "Степанов Степан Степанович",
-                    From = DateTime.Parse("2020-01-10"),
-                    To = DateTime.Parse("2020-02-10"),
-                    Closed = DateTime.Parse("2020-02-11"),
+                    From = DateTime.Parse("2020-04-10"),
+                    To = DateTime.Parse("2020-04-10"),
+                    Closed = DateTime.Parse("2020-04-11"),
                     Payment = 5000,
                     Comment = "тел. 234-67-98"
                 },
                 new Rent
                 {
                     Shop = shops[0],
-                    Employee = employees[0],
+                    Employee = employees[3],
                     Customer = "Павлов Павел Павлович",
                     From = DateTime.Parse("2020-01-10"),
-                    To = DateTime.Parse("2021-02-10"),
+                    To = DateTime.Parse("2020-02-10"),
+                    Closed = DateTime.Parse("2020-02-10"),
                 },
                 new Rent
                 {
                     Shop = shops[0],
-                    Employee = employees[0],
+                    Employee = employees[3],
                     Customer = "Егоров Егор Егорьевич",
-                    From = DateTime.Parse("2020-01-10"),
+                    From = DateTime.Parse("2020-06-10"),
                     To = DateTime.UtcNow
                 },
                 new Rent
                 {
                     Shop = shops[1],
-                    Employee = employees[1],
+                    Employee = employees[4],
+                    Customer = "Александров Александр Александрович",
+                    From = DateTime.Parse("2020-01-01"),
+                    To = DateTime.Parse("2020-01-12"),
+                    Closed = DateTime.Parse("2020-01-12"),
+                    RentEquipment = new List<RentEquipment>
+                    {
+                        new RentEquipment
+                        {
+                            Equipment = equipment[4]
+                        }
+                    }
+                }, //////
+                new Rent
+                {
+                    Shop = shops[1],
+                    Employee = employees[3],
+                    Customer = "Александров Александр Александрович",
+                    From = DateTime.Parse("2020-05-01"),
+                    To = DateTime.Parse("2020-05-02"),
+                    Closed = DateTime.Parse("2020-05-02"),
+                    Payment = 3000,
+                    RentEquipment = new List<RentEquipment>
+                    {
+                        new RentEquipment
+                        {
+                            Equipment = equipment[5]
+                        }
+                    }
+                },
+                new Rent
+                {
+                    Shop = shops[0],
+                    Employee = employees[2],
+                    Customer = "Александров Александр Александрович",
+                    From = DateTime.Parse("2020-05-01"),
+                    To = DateTime.Parse("2020-05-11"),
+                    Closed = DateTime.Parse("2020-05-11"),
+                    Comment = "тел. 234-67-44",
+                    RentEquipment = new List<RentEquipment>
+                    {
+                        new RentEquipment
+                        {
+                            Equipment = equipment[3]
+                        }
+                    }
+                },
+               new Rent
+                {
+                    Shop = shops[0],
+                    Employee = employees[2],
                     Customer = "Александров Александр Александрович",
                     From = DateTime.Parse("2020-06-01"),
-                    To = DateTime.Parse("2020-02-12"),
+                    To = DateTime.UtcNow,
+                    RentEquipment = new List<RentEquipment>
+                    {
+                        new RentEquipment
+                        {
+                            Equipment = equipment[6]
+                        }
+                    }
+                },
+                new Rent
+                {
+                    Shop = shops[1],
+                    Employee = employees[0],
+                    Customer = "Александров Александр Александрович",
+                    From = DateTime.Parse("2020-02-01"),
+                    To = DateTime.Parse("2020-02-02"),
+                    Closed = DateTime.Parse("2020-02-02"),
                     RentEquipment = new List<RentEquipment>
                     {
                         new RentEquipment
@@ -289,25 +410,76 @@ namespace RentApi.Infrastructure.Database
                         }
                     }
                 },
+                new Rent
+                {
+                    Shop = shops[1],
+                    Employee = employees[1],
+                    Customer = "Александров Александр Александрович",
+                    From = DateTime.Parse("2020-04-15"),
+                    To = DateTime.Parse("2020-04-17"),
+                    Closed = DateTime.Parse("2020-04-17"),
+                    RentEquipment = new List<RentEquipment>
+                    {
+                        new RentEquipment
+                        {
+                            Equipment = equipment[1]
+                        }
+                    }
+                },
+                new Rent
+                {
+                    Shop = shops[1],
+                    Employee = employees[1],
+                    Customer = "Александров Александр Александрович",
+                    From = DateTime.Parse("2020-04-01"),
+                    To = DateTime.Parse("2020-04-12"),
+                    Closed = DateTime.Parse("2020-04-12"),
+                    RentEquipment = new List<RentEquipment>
+                    {
+                        new RentEquipment
+                        {
+                            Equipment = equipment[0]
+                        }
+                    }
+                },
+             new Rent
+                {
+                    Shop = shops[0],
+                    Employee = employees[3],
+                    Customer = "Павлов Павел Павлович",
+                    From = DateTime.Parse("2020-02-10"),
+                    To = DateTime.Parse("2020-02-10"),
+                    Closed = DateTime.Parse("2020-02-10"),
+                },
+              new Rent
+                {
+                    Shop = shops[0],
+                    Employee = employees[3],
+                    Customer = "Павлов Павел Павлович",
+                    From = DateTime.Parse("2020-02-15"),
+                    To = DateTime.Parse("2020-02-17"),
+                    Closed = DateTime.Parse("2020-02-17"),
+                },
             };
             context.Rent.AddRange(rents);
 
             // RentEquipment
 
-            var rentEquipment = new RentEquipment[]
-            {
-                new RentEquipment
-                {
-                    Rent = rents[0],
-                    Equipment = equipment[0]
-                },
-                new RentEquipment
-                {
-                    Rent = rents[0],
-                    Equipment = equipment[1]
-                },
-            };
-            context.RentEquipment.AddRange(rentEquipment);
+            //var rentEquipment = new RentEquipment[]
+            //{
+            //    new RentEquipment
+            //    {
+            //        Rent = rents[0],
+            //        Equipment = equipment[0]
+            //    },
+            //    new RentEquipment
+            //    {
+            //        Rent = rents[0],
+            //        Equipment = equipment[1]
+            //    },
+
+            //};
+            //context.RentEquipment.AddRange(rentEquipment);
 
             await context.SaveChangesAsync();
 
@@ -326,6 +498,12 @@ namespace RentApi.Infrastructure.Database
 
             await userManager.UpdateSecurityStampAsync(users[1]);
             await userManager.AddToRoleAsync(users[1], "employee");
+            await userManager.UpdateSecurityStampAsync(users[2]);
+            await userManager.AddToRoleAsync(users[2], "employee");
+            await userManager.UpdateSecurityStampAsync(users[3]);
+            await userManager.AddToRoleAsync(users[3], "employee");
+            await userManager.UpdateSecurityStampAsync(users[4]);
+            await userManager.AddToRoleAsync(users[4], "employee");
         }
     }
 }

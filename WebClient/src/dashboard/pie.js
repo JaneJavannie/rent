@@ -4,7 +4,7 @@ import { ResponsivePie } from '@nivo/pie'
 export default ({ data }) => (
     <ResponsivePie
         data={data}
-        margin={{ top: 5, right: 150, bottom: 5, left: 5 }}
+        margin={{ top: 20, right: 20, bottom: 20, left: 0 }}
         innerRadius={0.3}
         padAngle={0.7}
         cornerRadius={3}
@@ -15,8 +15,8 @@ export default ({ data }) => (
         radialLabelsTextXOffset={6}
         radialLabelsTextColor="#333333"
         radialLabelsLinkOffset={0}
-        radialLabelsLinkDiagonalLength={16}
-        radialLabelsLinkHorizontalLength={24}
+        radialLabelsLinkDiagonalLength={10}
+        radialLabelsLinkHorizontalLength={10}
         radialLabelsLinkStrokeWidth={1}
         radialLabelsLinkColor={{ from: 'color' }}
         slicesLabelsSkipAngle={10}
@@ -28,7 +28,7 @@ export default ({ data }) => (
             {
                 anchor: 'right',
                 direction: 'column',
-                translateY: 56,
+                translateY: -20,
                 itemWidth: 100,
                 itemHeight: 18,
                 itemTextColor: '#999',

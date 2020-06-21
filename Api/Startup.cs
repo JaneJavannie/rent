@@ -15,6 +15,7 @@ using Microsoft.OpenApi.Models;
 using RentApi.Infrastructure;
 using SmartAnalytics.BASF.Backend.Application.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace RentApi
 {
@@ -50,13 +51,14 @@ namespace RentApi
 
             services.AddScoped<ApiHelper>();
 
-            //services.AddCors(o => o.AddPolicy("cors", builder =>
-            //{
-            //    builder.AllowAnyOrigin()
-            //           .AllowAnyMethod()
-            //           .AllowAnyHeader()
-            //            .WithExposedHeaders("X-Total-Count", "Content-Range"); ;
-            //}));
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 4;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+            });
 
             services.AddControllers();
 

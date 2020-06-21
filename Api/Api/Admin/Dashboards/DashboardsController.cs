@@ -32,7 +32,7 @@ namespace RentApi.Api.Admin.Dashboards
             var rentsPerEmployee = await _context.Employee
                 .Select(employee => new PieData
                 {
-                    Id = $"{employee.User.FirstName} {employee.User.MiddleName} {employee.User.LastName}",
+                    Id = $"{employee.User.FirstName[0]}. {employee.User.MiddleName[0]}. {employee.User.LastName}",
                     Value = employee.Rents.Where(rent => rent.From > (DateTime.Now - TimeSpan.FromDays(360))).Count()
                 })
                 .Where(x => x.Value > 0)
