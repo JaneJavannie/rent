@@ -28,7 +28,7 @@ const ShopSelector = props => {
                 value={shop}
                 onChange={event => dispatch(changeShop(event.target.value))}
             >
-                {ids.map(id => <MenuItem key={id} value={id}>{data[id].name}</MenuItem>)}
+                {ids.map(id => <MenuItem key={id} value={id}>{data[id] ? data[id].name : ""}</MenuItem>)}
             </Select>
         </span>
     );
