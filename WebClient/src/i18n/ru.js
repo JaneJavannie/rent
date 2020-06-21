@@ -31,7 +31,7 @@ const resources = {
     equipmentTypes: {
         name: 'Цены',
         fields: {
-            name: 'Наименование',
+            name: 'Наименование типа оборудования',
             pricePerDay: 'Цена за день',
             pricePerHour: 'Цена за час',
         },
