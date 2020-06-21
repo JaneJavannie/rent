@@ -49,7 +49,7 @@ namespace RentApi.Api
 
             if (endLte != null)
             {
-                query = query.Where(x => x.To < endLte.Value.Ceil(TimeSpan.FromDays(1)).ToUniversalTime());
+                query = query.Where(x => x.Closed == null && x.To <= endLte.Value.Ceil(TimeSpan.FromDays(1)).ToUniversalTime());
             }
 
             if (!string.IsNullOrWhiteSpace(q))
