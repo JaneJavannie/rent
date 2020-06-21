@@ -8,9 +8,9 @@ export default ({ data /* see data tab */ }) => (
     <ResponsiveLine
         data={data}
         margin={{ top: 5, right: 150, bottom: 50, left: 60 }}
-        xScale={{ type: 'linear', min: 1, stacked: false}}
-        yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: true, reverse: false }}
-        curve="linear"
+        xScale={{ type: 'point', min: 1, stacked: false}}
+        yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
+        curve="monotoneX"
         axisTop={null}
         axisRight={null}
         axisBottom={{
