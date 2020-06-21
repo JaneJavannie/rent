@@ -78,7 +78,7 @@ const EquipmentTable = (props) => {
 
     let total = 0;
     const eqPrice = eqRequest.data.reduce(function (acc, cur, i) {
-        acc[cur.id] = price(types[cur.id], record.from, record.to);
+        acc[cur.id] = price(types[cur.equipmentTypeId], record.from, record.to);
         total += acc[cur.id];
         return acc;
     }, {});
