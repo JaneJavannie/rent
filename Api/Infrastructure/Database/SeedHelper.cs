@@ -101,18 +101,18 @@ namespace RentApi.Infrastructure.Database
 
             var shops = new Shop[]
             {
-                new Shop
+             new Shop
+                {
+                    Name = "Прокат на Мира",
+                    Address = "Мира 88",
+                    Phone = "+73428952445",
+                },
+             new Shop
                 {
                     Name = "Прокат на Ленина",
                     Address = "Ленина 44",
                     Phone = "+7912456789"
                 },
-                new Shop
-                {
-                    Name = "Прокат на Мира",
-                    Address = "Мира 88",
-                    Phone = "+73428952445",
-                }
             };
 
             context.Shop.AddRange(shops);
@@ -310,7 +310,14 @@ namespace RentApi.Infrastructure.Database
                     To = DateTime.Parse("2020-04-10"),
                     Closed = DateTime.Parse("2020-04-11"),
                     Payment = 5000,
-                    Comment = "тел. 234-67-98"
+                    Comment = "тел. 234-67-98",
+                 RentEquipment = new List<RentEquipment>
+                    {
+                        new RentEquipment
+                        {
+                            Equipment = equipment[4]
+                        }
+                    }
                 },
                 new Rent
                 {
@@ -320,6 +327,13 @@ namespace RentApi.Infrastructure.Database
                     From = DateTime.Parse("2020-01-10"),
                     To = DateTime.Parse("2020-02-10"),
                     Closed = DateTime.Parse("2020-02-10"),
+                 RentEquipment = new List<RentEquipment>
+                    {
+                        new RentEquipment
+                        {
+                            Equipment = equipment[5]
+                        }
+                    }
                 },
                 new Rent
                 {
@@ -327,7 +341,14 @@ namespace RentApi.Infrastructure.Database
                     Employee = employees[3],
                     Customer = "Егоров Егор Егорьевич",
                     From = DateTime.Parse("2020-06-10"),
-                    To = DateTime.UtcNow
+                    To = DateTime.UtcNow,
+                RentEquipment = new List<RentEquipment>
+                    {
+                        new RentEquipment
+                        {
+                            Equipment = equipment[2]
+                        }
+                    }
                 },
                 new Rent
                 {
@@ -386,6 +407,7 @@ namespace RentApi.Infrastructure.Database
                     Customer = "Александров Александр Александрович",
                     From = DateTime.Parse("2020-06-01"),
                     To = DateTime.UtcNow,
+                    Payment = 2500,
                     RentEquipment = new List<RentEquipment>
                     {
                         new RentEquipment
@@ -450,6 +472,13 @@ namespace RentApi.Infrastructure.Database
                     From = DateTime.Parse("2020-02-10"),
                     To = DateTime.Parse("2020-02-10"),
                     Closed = DateTime.Parse("2020-02-10"),
+              RentEquipment = new List<RentEquipment>
+                    {
+                        new RentEquipment
+                        {
+                            Equipment = equipment[0]
+                        }
+                    }
                 },
               new Rent
                 {
@@ -458,8 +487,16 @@ namespace RentApi.Infrastructure.Database
                     Customer = "Павлов Павел Павлович",
                     From = DateTime.Parse("2020-02-15"),
                     To = DateTime.Parse("2020-02-17"),
-                    Closed = DateTime.Parse("2020-02-17"),
+                    Closed = DateTime.Parse("2020-02-17"), 
+                  RentEquipment = new List<RentEquipment>
+                    {
+                        new RentEquipment
+                        {
+                            Equipment = equipment[1]
+                        }
+                    }
                 },
+
             };
             context.Rent.AddRange(rents);
 
